@@ -102,8 +102,9 @@ select * from products where product_id not in (select product_id from cart);
 select * from customers where customer_id not in (select customer_id from cart);
 
 /* 17. Subquery to Calculate the Percentage of Total Revenue for a Product*/
-SELECT product_id, name, (total_price / (SELECT SUM(total_price) FROM orders)) * 100 AS revenue_percentage
-FROM products;
+SELECT p.product_id, p.name,
+(SUM(oi.quantity * p.price) / (SELECT SUM(total_price) FROM orders)) * 100 AS revenue_percentage
+FROM products p JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.product_id, p.name;
 
 /* 18. Subquery to Find Products with Low Stock*/
 SELECT * FROM products WHERE stockQuantity < (SELECT AVG(stockQuantity) FROM products);
